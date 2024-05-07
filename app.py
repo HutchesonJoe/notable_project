@@ -12,11 +12,20 @@ from seed_data import clients, exercises
 app=Flask(__name__)
 
 def get_db():
-  if 'db' not in g:
-    g.db = sqlite3.connect('database')
-    g.db.row_factory = sqlite3.Row
-  return g.db
-
+  try:
+    if 'db' not in g:
+      g.db = sqlite3.connect('database')
+      g.db.row_factory = sqlite3.Row
+    return g.db
+  #except sqlite3.OperationalError as e:
+  #  error_message = f"Database connection failed: {e}"
+  #  app.logger.error(error_message)
+  #  return error_message, 500
+  except Exception as e:
+    error_message = f"An unexpected error occured while connecting to the database: {e}"
+    app.logger.error(error_message)
+    return error_message, 500
+  
 @app.before_request
 def before_request():
   g.db = get_db()
