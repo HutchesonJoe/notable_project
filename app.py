@@ -94,7 +94,7 @@ def get_client_by_id(id):
   if request.method=="DELETE":
     cur.execute('DELETE FROM clients WHERE id = ?', (id))
     conn.commit()
-    return "client deleted!"
+    return "client deleted!", jsonify(dict(client))
   
 @app.route("/exercises")
 def get_exercises():
