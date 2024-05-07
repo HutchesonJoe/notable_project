@@ -5,23 +5,30 @@ Flask Server for Notable Project
 """
 import sqlite3
 
-from flask import Flask
-from flask import request
-from flask import jsonify
+from flask import Flask, g, jsonify, request
 
 from seed_data import clients, exercises
 
 app=Flask(__name__)
 
-def run_db():
-  conn=sqlite3.connect('client.db')
-  conn.row_factory=sqlite3.Row
-  conn.commit()
-  print("Database created.")
-  return conn
+def get_db():
+  if 'db' not in g:
+    g.db = sqlite3.connect('database')
+    g.db.row_factory = sqlite3.Row
+  return g.db
+
+@app.before_request
+def before_request():
+  g.db = get_db()
+
+@app.teardown_request
+def teardown_request(exception):
+  db = g.pop('db', None)
+  if db is not None:
+    db.close()
 
 def seed_clients():
-  conn=run_db()
+  conn = g.db
   cur=conn.cursor()
   cur.execute("CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY, name,age,weight,goal)")
   cur.execute("SELECT COUNT(*) FROM clients")
@@ -30,10 +37,11 @@ def seed_clients():
       cur.execute("INSERT OR IGNORE INTO clients (name, age, goal, weight) VALUES (?, ?, ?, ?)", c       
     )
   conn.commit()
+ 
   print("Clients added.")
 
 def seed_exercises():
-  conn=run_db()
+  conn=g.db
   cur=conn.cursor()
   cur.execute("CREATE TABLE IF NOT EXISTS exercises(id INTEGER PRIMARY KEY, name, category)")
   cur.execute("SELECT COUNT(*) FROM exercises")
@@ -41,17 +49,16 @@ def seed_exercises():
     for e in exercises:
       cur.execute("INSERT OR IGNORE INTO exercises (name, category) VALUES (?, ?)", e)
   conn.commit()
+  conn.close()
   print("Exercises added.")
 
 @app.route('/clients', methods=['GET', 'POST'])
 def get_clients():
-  conn=run_db()
+  conn=g.db
   cur=conn.cursor()
   if request.method=="GET":
     cur.execute('SELECT * FROM clients')
     clients = cur.fetchall()
-    conn.close()
-  
     client_list=[dict(client) for client in clients]
     return jsonify(client_list)
   if request.method=="POST":
@@ -59,8 +66,7 @@ def get_clients():
     name = data.get('name')
     age = data.get('age')
     goal = data.get('goal')
-    weight = data.get('goal')
-    conn=sqlite3.connect('client.db')
+    weight = data.get('weight')
     cur=conn.cursor()
     cur.execute("INSERT OR IGNORE INTO clients (name, age, weight, goal) VALUES (?,?,?,?)", (name, age, goal, weight))
     conn.commit()
@@ -68,7 +74,7 @@ def get_clients():
   
 @app.route('/clients/<id>', methods=['GET', 'DELETE'])
 def get_client_by_id(id):
-  conn=run_db()
+  conn=g.db
   cur=conn.cursor()
   cur.execute('SELECT * FROM clients WHERE id = ?', (id))
   client=cur.fetchone()
@@ -76,18 +82,23 @@ def get_client_by_id(id):
     return jsonify({'error': 'User not found'}), 404
   if request.method=="GET":
     return jsonify(dict(client))
-    conn.close()
   if request.method=="DELETE":
     cur.execute('DELETE FROM clients WHERE id = ?', (id))
     conn.commit()
-    conn.close()
     return "client deleted!"
-
-
+  
+@app.route("/exercises")
+def get_exercises():
+  conn=g.db
+  cur=conn.cursor()
+  cur.execute('SELECT * FROM exercises')
+  exercises=cur.fetchall()
+  exercises = [dict(exercise) for exercise in exercises]
+  return jsonify(exercises)
 
 if __name__=='__main__':
-  run_db()
-  #fetch_all()
-  seed_clients()
-  seed_exercises()
+  with app.app_context():
+    get_db()
+    seed_clients()
+    seed_exercises()
   app.run(host='0.0.0.0', port=5001, debug=True)
