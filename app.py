@@ -11,16 +11,11 @@ from flask import jsonify
 
 from seed_data import clients, exercises
 
-# from models import Client, Exercise 
-
 app=Flask(__name__)
 
 def run_db():
   conn=sqlite3.connect('client.db')
   conn.row_factory=sqlite3.Row
-  #cur=conn.cursor()
-  #cur.execute("CREATE TABLE IF NOT EXISTS clients(id INTEGER PRIMARY KEY, name,age,weight,goal)")
-  #cur.execute("CREATE TABLE IF NOT EXISTS exercises(id INTEGER PRIMARY KEY, name, category)")
   conn.commit()
   print("Database created.")
   return conn
@@ -47,13 +42,6 @@ def seed_exercises():
       cur.execute("INSERT OR IGNORE INTO exercises (name, category) VALUES (?, ?)", e)
   conn.commit()
   print("Exercises added.")
-
-#def fetch_all():
-#  conn=run_db()
-#  cur=conn.cursor()
-#  res=cur.execute("SELECT * FROM clients")
-#  print(res.fetchall())
-#  conn.close()
 
 @app.route('/clients', methods=['GET', 'POST'])
 def get_clients():
