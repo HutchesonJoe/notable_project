@@ -1,13 +1,15 @@
-clients = [
-  ("Emily", 41, "strength", 134),
-  ("Joe", 42, "flexibility", 187),
-  ("Charl", 44, "strength", 205),
-  ("Aparnaa", 37, "strength", 121)
+doctors = [
+  ("Joseph", "Hutcheson"),
+  ("Stephen", "Zurrow"),
+  ("Charl", "Brown"),
+  ("Aparnaa", "Sanai")
 ]
 
-exercises = [
-  ("Push-ups", "upper body push"),
-  ("Plank", "core"),
-  ("Body Squats", "lower body"),
-  ("Body Lunges", "lower body")
+appointments = [
+  ("Joseph", "Hutcheson", "2024-05-12", "13:15", "New Patient", 1),
+  ("Shaquil",  "Thompson", "2024-11-30", "09:00","Follow-up", 2),
+  ("Joe", "Sumberg", "2024-05-12", "13:15", "New Patient", 1),
+  ("Paulomi", "Shah", "2024-05-12", "13:15","Follow-up", 2),
+  ("Janet", "Reno", "2024-05-12", "13:15","Follow-up", 2),
+  ("Lil", "NasX", "2024-05-12", "13:15","Follow-up", 2),
 ]
