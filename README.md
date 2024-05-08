@@ -4,6 +4,8 @@
 
 This application is written in __Python (Python 3.11.2)__ and uses a __Flask server__ and a __SQLite3__ database. 
 
+To run this application: 
+
 - Clone this repo: `git clone https://github.com/HutchesonJoe/notable_project.git`
 
 - Update or install Python [here](https://www.python.org/downloads/).
