@@ -64,9 +64,8 @@ def seed_appointments():
 def index():
   return """
   <h1>Welcome!</h1> 
-  <h2>This Flask API is set up to accept GET, POST and DELETE request.<h2>
-  <h2>GET requests for all data can be send to /{data}</h2>
-  <h2>GET requests for a particular ??? can be sent to /{data}/\<id\></h2> 
+  <h2>This is a Flask server that accepts HTTP requests. The README.md file provides instructions on how to send requests.</h2>
+  <h2>joehutcheson@gmail.com</h2>
   """
 
 @app.route('/doctors', methods=['GET', 'POST'])
