@@ -157,7 +157,9 @@ def add_appointment():
   cur.execute("SELECT * FROM appointments WHERE ? = doctor_id AND ? = date AND ? = time", (dr_id, date, time) )
   count = cur.fetchall()
   print(len(count))
-  if len(count) >= 3:
+  if time.split(":")[-1] not in ["00", "15", "30", "45"]:
+    return jsonify({'error':'Appointments must be scheduled at quarters of the hour(:00, :15, :30, :45)'}), 404
+  elif len(count) >= 3:
     return jsonify({'error': 'Maximum appointments scheduled for this date and time'}), 404
   else:
       first_name = data.get('first_name')
