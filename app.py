@@ -17,10 +17,6 @@ def get_db():
       g.db = sqlite3.connect('database')
       g.db.row_factory = sqlite3.Row
     return g.db
-  #except sqlite3.OperationalError as e:
-  #  error_message = f"Database connection failed: {e}"
-  #  app.logger.error(error_message)
-  #  return error_message, 500
   except Exception as e:
     error_message = f"An unexpected error occured while connecting to the database: {e}"
     app.logger.error(error_message)
@@ -60,6 +56,15 @@ def seed_exercises():
   conn.commit()
   conn.close()
   print("Exercises added.")
+
+@app.route('/')
+def index():
+  return """
+  <h1>Welcome!</h1> 
+  <h2>This Flask API is set up to accept GET, POST and DELETE request.<h2>
+  <h2>GET requests for all data can be send to /{data}</h2>
+  <h2>GET requests for a particular ??? can be sent to /{data}/\<id\></h2> 
+  """
 
 @app.route('/clients', methods=['GET', 'POST'])
 def get_clients():

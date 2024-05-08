@@ -1,3 +1,5 @@
 # notable_project
 
-RESTful backend using Flask and SQLite
+A RESTful backend using Flask and SQLite.
+
+This application is written in Python ()
