@@ -83,9 +83,9 @@ def get_doctors():
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     cur=conn.cursor()
-    cur.execute("INSERT OR IGNORE INTO clients (name, age, weight, goal) VALUES (?,?,?,?)", (first_name, last_name))
+    cur.execute("INSERT OR IGNORE INTO doctors (first_name, last_name) VALUES (?,?)", (first_name, last_name))
     conn.commit()
-    return "client added!"
+    return "Doctor added!"
   
 @app.route('/doctors/<id>', methods=['GET', 'DELETE'])
 def get_doctor_by_id(id):
